@@ -20,5 +20,5 @@ from devops.views import DevOpsEngineers
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('devops/', DevOpsEngineers.as_view())
+    path('devops/', DevOpsEngineers.as_view(), name='devops')
 ]
