@@ -29,6 +29,7 @@ class DevOpsTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 8)
+        self.assertEqual(response.data['DM_data_center'], 'Paris')
 
         data = {
             "DM_capacity": "6",
@@ -47,6 +48,7 @@ class DevOpsTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 9)
+        self.assertEqual(response.data['DM_data_center'], 'Stockholm')
 
         data = {
             "DM_capacity": "12",
@@ -65,6 +67,7 @@ class DevOpsTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 3)
+        self.assertEqual(response.data['DM_data_center'], 'Berlin')
 
     def test_correctness(self):
         url = reverse('devops')
@@ -74,20 +77,13 @@ class DevOpsTests(APITestCase):
                 "DM_capacity": randint(1, 20),
                 "DE_capacity": randint(1, 20),
                 "data_centers": [
-                    {
-                        "name": "Paris",
-                        "servers": randint(1, 300)
-                    },
-                    {
-                        "name": "Stockholm",
-                        "servers": randint(1, 300)
-                    },
-                    {
-                        "name": "Moscow",
-                        "servers": randint(1, 300)
-                    }
                 ]
             }
+            for i in range(0, randint(1, 20)):
+                data['data_centers'].append({
+                    "name": "Dummy",
+                    "servers": randint(1, 300)
+                })
             response = self.client.post(url, data, format='json')
             instance = DevOpsEngineers()
             self.assertEqual(response.status_code, status.HTTP_200_OK)

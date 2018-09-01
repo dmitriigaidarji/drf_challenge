@@ -46,9 +46,9 @@ class DevOpsEngineers(APIView):
     def post(self, request):
         serializer = DevOpsSerializer(data=request.data)
         if serializer.is_valid():
-            DM_capacity = serializer.validated_data.get('DM_capacity')
-            DE_capacity = serializer.validated_data.get('DE_capacity')
-            data_centers = serializer.validated_data.get('data_centers')
-            return Response(self.smart_search(self, DM_capacity, DE_capacity, data_centers))
+            return Response(self.smart_search(self,
+                                              serializer.validated_data.get('DM_capacity'),
+                                              serializer.validated_data.get('DE_capacity'),
+                                              serializer.validated_data.get('data_centers')))
         else:
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
