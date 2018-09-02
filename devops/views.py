@@ -6,7 +6,6 @@ from devops.serializers import DevOpsSerializer
 
 
 class DevOpsEngineers(APIView):
-    @staticmethod
     def calc(self, index, DM_capacity, DE_capacity, data_centers):
         result = 0
         for i in range(0, len(data_centers)):
@@ -20,16 +19,14 @@ class DevOpsEngineers(APIView):
                     result = result + int(value / DE_capacity) + 1
         return {'DE': result, 'DM_data_center': data_centers[index]['name']}
 
-    @staticmethod
     def full_search(self, DM_capacity, DE_capacity, data_centers):
         result = None
         for i in range(0, len(data_centers)):
-            calc_result = self.calc(self, i, DM_capacity, DE_capacity, data_centers)
+            calc_result = self.calc(i, DM_capacity, DE_capacity, data_centers)
             if result is None or calc_result['DE'] < result['DE']:
                 result = calc_result
         return result
 
-    @staticmethod
     def smart_search(self, DM_capacity, DE_capacity, data_centers):
         remains = []
         for i in range(0, len(data_centers)):
@@ -41,14 +38,15 @@ class DevOpsEngineers(APIView):
         for i in range(0, len(remains)):
             if remains[i] > remains[max_index]:
                 max_index = i
-        return self.calc(self, max_index, DM_capacity, DE_capacity, data_centers)
+        return self.calc(max_index, DM_capacity, DE_capacity, data_centers)
 
     def post(self, request):
         serializer = DevOpsSerializer(data=request.data)
         if serializer.is_valid():
-            return Response(self.smart_search(self,
-                                              serializer.validated_data.get('DM_capacity'),
-                                              serializer.validated_data.get('DE_capacity'),
-                                              serializer.validated_data.get('data_centers')))
+            return Response(self.smart_search(
+                serializer.validated_data.get('DM_capacity'),
+                serializer.validated_data.get('DE_capacity'),
+                serializer.validated_data.get('data_centers')
+            ))
         else:
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

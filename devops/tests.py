@@ -1,7 +1,5 @@
 from random import randint
 
-from django.test import TestCase
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -71,6 +69,7 @@ class DevOpsTests(APITestCase):
 
     def test_correctness(self):
         url = reverse('devops')
+        instance = DevOpsEngineers()
 
         for i in range(0, 1000):
             data = {
@@ -85,9 +84,8 @@ class DevOpsTests(APITestCase):
                     "servers": randint(1, 300)
                 })
             response = self.client.post(url, data, format='json')
-            instance = DevOpsEngineers()
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(
                 response.data['DE'],
-                instance.full_search(instance, data['DM_capacity'], data['DE_capacity'], data['data_centers'])['DE']
+                instance.full_search(data['DM_capacity'], data['DE_capacity'], data['data_centers'])['DE']
             )
