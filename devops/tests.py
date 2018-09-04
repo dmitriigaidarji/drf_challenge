@@ -1,14 +1,16 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
+from unittest import TestCase
 
 
-class DevOpsTests(APITestCase):
+class DevOpsTests(TestCase):
     def test_initial(self):
         """
         Test default use cases
         """
         url = reverse('devops')
+        client = APIClient()
         data = {
             "DM_capacity": "20",
             "DE_capacity": "8",
@@ -23,7 +25,7 @@ class DevOpsTests(APITestCase):
                 }
             ]
         }
-        response = self.client.post(url, data, format='json')
+        response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 8)
         self.assertEqual(response.data['DM_data_center'], 'Paris')
@@ -42,7 +44,7 @@ class DevOpsTests(APITestCase):
                 }
             ]
         }
-        response = self.client.post(url, data, format='json')
+        response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 9)
         self.assertEqual(response.data['DM_data_center'], 'Stockholm')
@@ -61,7 +63,7 @@ class DevOpsTests(APITestCase):
                 }
             ]
         }
-        response = self.client.post(url, data, format='json')
+        response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 3)
         self.assertEqual(response.data['DM_data_center'], 'Berlin')
