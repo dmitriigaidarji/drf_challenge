@@ -1,14 +1,13 @@
-from random import randint
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from devops.views import DevOpsEngineers
-
 
 class DevOpsTests(APITestCase):
     def test_initial(self):
+        """
+        Test default use cases
+        """
         url = reverse('devops')
         data = {
             "DM_capacity": "20",
@@ -66,26 +65,3 @@ class DevOpsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['DE'], 3)
         self.assertEqual(response.data['DM_data_center'], 'Berlin')
-
-    def test_correctness(self):
-        url = reverse('devops')
-        instance = DevOpsEngineers()
-
-        for i in range(0, 1000):
-            data = {
-                "DM_capacity": randint(1, 20),
-                "DE_capacity": randint(1, 20),
-                "data_centers": [
-                ]
-            }
-            for i in range(0, randint(1, 20)):
-                data['data_centers'].append({
-                    "name": "Dummy",
-                    "servers": randint(1, 300)
-                })
-            response = self.client.post(url, data, format='json')
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertEqual(
-                response.data['DE'],
-                instance.full_search(data['DM_capacity'], data['DE_capacity'], data['data_centers'])['DE']
-            )
