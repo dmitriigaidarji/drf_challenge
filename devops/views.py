@@ -1,6 +1,6 @@
 import sys
 from hashlib import md5
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union
 from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,11 +10,14 @@ from devops.serializers import DevOpsSerializer
 
 
 class DevOpsEngineers(APIView):
+    def get_devops_response(self, de: int, dm_data_center: str) -> Dict[str, str]:
+        return {'DE': de, 'DM_data_center': dm_data_center}
+
     def calc(self,
              index: int,
              dm_capacity: int,
              de_capacity: int,
-             data_centers: List[Dict[str, int]]) -> Dict[str, str]:
+             data_centers: List[Dict[str, Union[str, int]]]) -> Dict[str, str]:
         """
         Calculation function to get the amount of required DEs
         as well as the optimal data center name
@@ -30,12 +33,12 @@ class DevOpsEngineers(APIView):
                     result = result + int(value / de_capacity)
                 else:
                     result = result + int(value / de_capacity) + 1
-        return {'DE': result, 'DM_data_center': data_centers[index]['name']}
+        return self.get_devops_response(result, data_centers[index]['name'])
 
     def smart_search(self,
                      dm_capacity: int,
                      de_capacity: int,
-                     data_centers: List[Dict[str, int]]) -> Dict[str, str]:
+                     data_centers: List[Dict[str, Union[str, int]]]) -> Dict[str, str]:
         """
         Iterate through input to find the best match in one loop
 
@@ -54,7 +57,7 @@ class DevOpsEngineers(APIView):
     def main_calc(self,
                   dm_capacity: int,
                   de_capacity: int,
-                  data_centers: List[Dict[str, int]]) -> Dict[str, str]:
+                  data_centers: List[Dict[str, Union[str, int]]]) -> Dict[str, str]:
         """
         Verify if the result is already cached
         If yes - return the value from cache
@@ -90,4 +93,4 @@ class DevOpsEngineers(APIView):
                 serializer.validated_data.get('data_centers')
             ))
         else:
-            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

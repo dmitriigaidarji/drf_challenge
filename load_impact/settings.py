@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '1*)g=7s)ox$-h98=$8c#rr0=rok=hrez($gx=9jh1*s*wl^nki'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -40,20 +40,6 @@ ROOT_URLCONF = 'load_impact.urls'
 
 
 WSGI_APPLICATION = 'load_impact.wsgi.application'
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.1/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 
 REST_FRAMEWORK = {
